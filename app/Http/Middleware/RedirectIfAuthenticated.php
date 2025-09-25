@@ -10,8 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 class RedirectIfAuthenticated
 {
     /**
-     * Handle an incoming request.
-     *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next, string ...$guards): Response
@@ -20,14 +18,14 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                // Nossa lógica customizada para redirecionar usuários já logados
+                /** @var \App\DTOs\UserDTO $user */
                 $user = Auth::user();
 
                 if ($user->is_adm) {
                     return redirect()->route('admin.dashboard');
                 }
 
-                return redirect()->route('professor.dashboard');
+                return redirect()->route('documents.dashboard');
             }
         }
 

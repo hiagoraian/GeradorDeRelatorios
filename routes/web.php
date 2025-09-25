@@ -1,15 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\ProfessorController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Documents\DashboardController as DocumentsDashboardController;
+use App\Http\Controllers\Admin\AdminController;
 
 /*
 |--------------------------------------------------------------------------
 | Rotas de Autenticação
 |--------------------------------------------------------------------------
-| Agrupadas pelo LoginController para maior organização.
 */
 Route::controller(LoginController::class)->group(function () {
     Route::get('/', 'create')->name('login')->middleware('guest');
@@ -22,20 +22,20 @@ Route::controller(LoginController::class)->group(function () {
 |--------------------------------------------------------------------------
 | Rotas Protegidas da Aplicação
 |--------------------------------------------------------------------------
-| Todas as rotas aqui dentro exigem que o usuário esteja logado.
 */
 Route::middleware('auth')->group(function () {
 
-    // Grupo de Rotas do Professor
-    Route::middleware('role:0')->prefix('professor')->name('professor.')->group(function () {
-        Route::get('/relatorios', [ProfessorController::class, 'index'])->name('dashboard');
-        // Ex: Route::get('/relatorios/novo', ...)->name('reports.create');
+    // Grupo de Rotas de Documentos
+
+    Route::middleware('role:0')->prefix('documents')->name('documents.')->group(function () {
+
+        Route::get('/dashboard', [DocumentsDashboardController::class, 'index'])->name('dashboard');
     });
 
     // Grupo de Rotas do Administrador
     Route::middleware('role:1')->prefix('admin')->name('admin.')->group(function () {
+    
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-        // Ex: Route::get('/usuarios', ...)->name('users.index');
     });
 
 });

@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Database;
+namespace App\Data;
 
 use PDO;
 use PDOException;
+use RuntimeException;
 
 class Connection
 {
@@ -12,11 +13,14 @@ class Connection
     public static function getPdo(): PDO
     {
         if (self::$instance === null) {
+            $config = config('database.connections.mysql');
+            
             $dsn = sprintf(
-                'mysql:host=%s;dbname=%s;port=%s;charset=utf8mb4',
-                env('DB_HOST'),
-                env('DB_DATABASE'),
-                env('DB_PORT', '3306')
+                'mysql:host=%s;dbname=%s;port=%s;charset=%s',
+                $config['host'],
+                $config['database'],
+                $config['port'],
+                $config['charset'] ?? 'utf8mb4'
             );
 
             $options = [
@@ -25,9 +29,17 @@ class Connection
             ];
 
             try {
-                self::$instance = new PDO($dsn, env('DB_USERNAME'), env('DB_PASSWORD'), $options);
+                self::$instance = new PDO(
+                    $dsn,
+                    $config['username'],
+                    $config['password'],
+                    $options
+                );
             } catch (PDOException $e) {
-                die('Erro na conexão com o banco de dados: ' . $e->getMessage());
+                throw new RuntimeException(
+                    'Erro na conexão com o banco de dados: ' . $e->getMessage(),
+                    (int)$e->getCode()
+                );
             }
         }
 

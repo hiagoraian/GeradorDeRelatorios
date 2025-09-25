@@ -2,6 +2,7 @@
 
 namespace App\Auth;
 
+use App\DTOs\UserDTO;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -10,25 +11,17 @@ use Illuminate\Auth\GenericUser;
 
 class PdoUserProvider implements UserProvider
 {
-    protected UserRepositoryInterface $users;
-    protected Hasher $hasher;
+    public function __construct(
+        protected UserRepositoryInterface $userRepository,
+        protected Hasher $hasher
+    ) {}
 
-    public function __construct(UserRepositoryInterface $users, Hasher $hasher)
+    public function retrieveById($identifier): ?Authenticatable
     {
-        $this->users = $users;
-        $this->hasher = $hasher;
-    }
+        $userDto = $this->userRepository->findById($identifier);
 
-    public function retrieveByCredentials(array $credentials)
-    {
-        if (empty($credentials['email'])) {
-            return null;
-        }
-
-        $user = $this->users->findByEmail($credentials['email']);
-
-        if ($user) {
-            return new GenericUser((array) $user);
+        if ($userDto) {
+            return $this->getAuthenticatable($userDto);
         }
 
         return null;
@@ -36,12 +29,27 @@ class PdoUserProvider implements UserProvider
 
     public function validateCredentials(Authenticatable $user, array $credentials): bool
     {
-        $plain = $credentials['password'];
-        return $this->hasher->check($plain, $user->getAuthPassword());
+        return $this->hasher->check(
+            $credentials['password'],
+            $user->getAuthPassword()
+        );
     }
     
-    // Os métodos abaixo não são usados para login, mas a interface exige.
-    public function retrieveById($identifier) { return null; }
+    protected function getAuthenticatable(UserDTO $userDto): Authenticatable
+    {
+        $attributes = [
+            'id' => $userDto->id,
+            'name' => $userDto->name,
+            'email' => $userDto->email,
+            'password' => $userDto->password,
+            'is_adm' => $userDto->is_adm,
+            'masp' => $userDto->masp,
+        ];
+        
+        return new GenericUser($attributes);
+    }
+
+    public function retrieveByCredentials(array $credentials) { return null; }
     public function retrieveByToken($identifier, $token) { return null; }
     public function updateRememberToken(Authenticatable $user, $token) {}
 }
