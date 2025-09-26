@@ -1,45 +1,34 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
+@extends('layouts.app')
+
+@section('content')
+<div class="login-card">
+    <h1>Portal de Relatórios do NECS</h1>
+    <h3>Utilize suas credenciais para acessar</h3>
 
     @if ($errors->any())
-        <div style="color: red;">
-            <strong>Erro:</strong>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="error-message">
+            {{ $errors->first() }}
         </div>
     @endif
 
     <form method="POST" action="{{ route('login.store') }}">
         @csrf
 
-        <div>
-            <label for="email">Email</label><br>
+        <div class="form-group">
+            <label for="email">Email</label>
             <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus>
         </div>
 
-        <br>
-
-        <div>
-            <label for="password">Senha</label><br>
+        <div class="form-group">
+            <label for="password">Senha</label>
             <input type="password" id="password" name="password" required>
         </div>
 
-        <br>
-
         <div>
-            <button type="submit">
+            <button type="submit" class="form-button">
                 Entrar
             </button>
         </div>
     </form>
-</body>
-</html>
+</div>
+@endsection
