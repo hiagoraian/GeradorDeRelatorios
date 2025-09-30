@@ -75,6 +75,84 @@
             border-radius: 4px;
             margin-bottom: 20px;
         }
+
+        /* Adicione este CSS ao seu layouts/app.blade.php */
+
+.dashboard-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    
+    max-width: 100%;
+}
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-header h1 {
+        color: #2A1871;
+        margin: 0;
+    }
+
+    .logout-button {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .filter-bar {
+        margin-bottom: 20px;
+    }
+
+    .table-container table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-container th, .table-container td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .table-container th {
+        background-color: #f8f9fa;
+    }
+
+    .table-container tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .status-sent {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .status-pending {
+        color: #ffc107;
+        font-weight: bold;
+    }
+
+    .actions .btn {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        color: white;
+    }
+    .btn-primary { background-color: #007bff; }
+    .btn-secondary { background-color: #6c757d; }
+    .btn-danger { background-color: #dc3545; }
     </style>
 </head>
 <body>
