@@ -1,37 +1,33 @@
 @extends('layouts.app')
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/dashboard.css') }}">
+@endpush
 
 @section('content')
+{{-- Para manter simples, vamos colocar o CSS da tabela aqui por enquanto --}}
+
 <div class="dashboard-container">
     <div class="dashboard-header">
-        <h1>Painel do Administrador</h1>
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="logout-button">Sair</button>
-        </form>
+        <h1>Professores</h1>
+        {{-- O botão de sair agora está no menu lateral, podemos remover este se quisermos --}}
+        {{-- <form action="{{ route('logout') }}" method="POST"><button type="submit" class="logout-button">Sair</button></form> --}}
     </div>
 
-    {{-- Filtro de Semestre --}}
     <div class="filter-bar">
         <form action="{{ route('admin.dashboard') }}" method="GET">
             <label for="semester">Filtrar por Semestre:</label>
             <select name="semester" id="semester" onchange="this.form.submit()">
                 <option value="2025.2" {{ $selectedSemester == '2025.2' ? 'selected' : '' }}>2025.2</option>
                 <option value="2026.1" {{ $selectedSemester == '2026.1' ? 'selected' : '' }}>2026.1</option>
-                <option value="2026.2" {{ $selectedSemester == '2026.2' ? 'selected' : '' }}>2026.2</option>
             </select>
         </form>
     </div>
 
-    {{-- Tabela de Professores --}}
     <div class="table-container">
         <table>
             <thead>
                 <tr>
-                    <th>Professor</th>
-                    <th>MASP</th>
-                    <th>Vínculo</th>
-                    <th>Status do Relatório</th>
-                    <th>Ações</th>
+                    <th>Professor</th><th>MASP</th><th>Vínculo</th><th>Status do Relatório</th><th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,10 +44,9 @@
                             @endif
                         </td>
                         <td class="actions">
-                            <button class="btn btn-secondary">Perfil</button>
-                            {{-- O botão "Ver Relatório" só aparece se foi enviado --}}
+                            <a href="#" class="btn btn-warning">Perfil</a>
                             @if ($professor->reportSent)
-                                <button class="btn btn-primary">Ver Relatório</button>
+                                <a href="#" class="btn btn-primary">Ver Relatório</a>
                             @endif
                         </td>
                     </tr>
