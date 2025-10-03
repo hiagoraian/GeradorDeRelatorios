@@ -57,8 +57,29 @@ class PdoUserRepository implements UserRepositoryInterface
             name: $userData->name,
             email: $userData->email,
             masp: $userData->masp,
+            phone: $userData->phone,
             is_adm: (bool) $userData->is_adm,
             password: $userData->password
         );
+    }
+
+    // Dentro da classe PdoUserRepository
+
+    public function update(int $id, array $data): bool
+    {
+
+        $fields = [];
+        foreach (array_keys($data) as $field) {
+            $fields[] = "{$field} = :{$field}";
+        }
+        $fieldString = implode(', ', $fields);
+
+        $data['id'] = $id;
+
+        $sql = "UPDATE users SET {$fieldString} WHERE id = :id";
+        
+        $stmt = $this->pdo->prepare($sql);
+        
+        return $stmt->execute($data);
     }
 }

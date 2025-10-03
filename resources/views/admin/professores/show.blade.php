@@ -7,6 +7,11 @@
 @section('content')
 <div class="dashboard-container">
     <div class="dashboard-header">
+        @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
         <h1>Perfil de: {{ $professor->name }}</h1>
         {{-- [MELHORIA] Adicionamos as classes de botão ao link de "Voltar" --}}
         <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">Voltar para a Lista</a>
@@ -26,11 +31,14 @@
             <label>MASP</label>
             <p>{{ $professor->masp }}</p>
         </div>
+        <div class="detail-item">
+            <label>Telefone</label>
+            <p>{{ $professor->phone ?? 'Não informado' }}</p>
+        </div>
     </div>
 
     <div class="profile-actions">
-        <button href="#" class="btn btn-warning">Editar Perfil</button>
-        
+        <a href="{{ route('admin.professores.edit', ['id' => $professor->id]) }}" class="btn btn-warning">Editar Perfil</a>
     </div>
 </div>
 @endsection

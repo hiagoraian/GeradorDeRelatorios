@@ -37,6 +37,8 @@ Route::middleware('auth')->group(function () {
     
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         Route::get('/professores/{id}', [AdminController::class, 'show'])->name('professores.show');
+        Route::get('/professors/{id}/edit', [AdminController::class, 'edit'])->name('professores.edit');
+        Route::put('/professores/{id}', [AdminController::class, 'update'])->name('professores.update');
     });
 
 });

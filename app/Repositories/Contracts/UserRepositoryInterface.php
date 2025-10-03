@@ -20,4 +20,6 @@ interface UserRepositoryInterface
      * @return UserDTO|null
      */
     public function findById(int $id): ?UserDTO;
+    
+    public function update(int $id, array $data): bool;
 }

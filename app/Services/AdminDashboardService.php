@@ -35,4 +35,11 @@ class AdminDashboardService
         // 3. O serviço simplesmente delega a busca para o repositório correto.
         return $this->userRepository->findById($id);
     }
+
+    public function updateProfessor(int $id, array $data): bool
+    {
+        // Por enquanto, o serviço apenas repassa a chamada para o repositório.
+        // No futuro, poderíamos adicionar lógicas aqui, como enviar um e-mail de notificação.
+        return $this->userRepository->update($id, $data);
+    }
 }
