@@ -95,3 +95,46 @@ tbody tr:hover {
 .btn-warning {
     background-color: #ffc107;
 }
+/*
+|--------------------------------------------------------------------------
+| Estilos para a Página de Perfil (show.blade.php)
+|--------------------------------------------------------------------------
+*/
+
+.profile-details {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.detail-item {
+    display: grid;
+    /* Cria duas colunas: uma para o label, outra para o dado */
+    grid-template-columns: 200px 1fr;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item label {
+    font-weight: bold;
+    color: #555;
+    font-size: 0.9em;
+    text-transform: uppercase; /* Deixa o label em maiúsculas */
+}
+
+.detail-item p {
+    margin: 0;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.profile-actions {
+    margin-top: 40px;
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+}

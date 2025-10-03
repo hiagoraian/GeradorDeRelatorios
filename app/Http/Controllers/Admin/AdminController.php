@@ -27,4 +27,17 @@ class AdminController extends Controller
             'selectedSemester' => $selectedSemester,
         ]);
     }
+
+    public function show(int $id): View
+    {
+        $professor = $this->service->findProfessorById($id);
+
+        if (!$professor) {
+            abort(404, 'Professor não encontrado.');
+        }
+
+        return view('admin.professores.show', [
+            'professor' => $professor
+        ]);
+    }
 }

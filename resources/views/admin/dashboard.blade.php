@@ -44,7 +44,8 @@
                             @endif
                         </td>
                         <td class="actions">
-                            <a href="#" class="btn btn-warning">Perfil</a>
+                            <a href="{{ route('admin.professores.show', ['id' => $professor->userId]) }}" class="btn btn-warning">Perfil</a>
+                            
                             @if ($professor->reportSent)
                                 <a href="#" class="btn btn-primary">Ver Relatório</a>
                             @endif

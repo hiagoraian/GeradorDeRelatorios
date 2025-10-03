@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:1')->prefix('admin')->name('admin.')->group(function () {
     
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+        Route::get('/professores/{id}', [AdminController::class, 'show'])->name('professores.show');
     });
 
 });

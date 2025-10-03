@@ -2,35 +2,37 @@
 
 namespace App\Services;
 
+use App\DTOs\UserDTO;
 use App\Repositories\Contracts\ProfessorSemesterRepositoryInterface;
+use App\Repositories\Contracts\UserRepositoryInterface;
 
-/**
- * Class AdminDashboardService
- *
- * Encapsula as regras de negócio para o painel do administrador.
- */
 class AdminDashboardService
 {
     /**
-     * O construtor injeta as dependências necessárias.
-     *
-     * @param ProfessorSemesterRepositoryInterface $repository O repositório para acesso aos dados.
+     * O construtor agora injeta AMBOS os repositórios que o serviço precisa.
      */
     public function __construct(
-        protected ProfessorSemesterRepositoryInterface $repository
+        protected ProfessorSemesterRepositoryInterface $professorSemesterRepository,
+        protected UserRepositoryInterface $userRepository
     ) {}
 
     /**
      * Busca a lista de professores ativos para um semestre específico.
-     *
-     * @param string $semester O semestre a ser filtrado (ex: '2025.2').
-     * @return \App\DTOs\ProfessorSemesterDTO[]
      */
     public function getProfessorListBySemester(string $semester): array
     {
-        // Por enquanto, o serviço apenas delega a chamada para o repositório.
-        // Se no futuro precisarmos, por exemplo, de filtrar professores
-        // com base em outra regra, a lógica seria adicionada aqui.
-        return $this->repository->getActiveBySemester($semester);
+        return $this->professorSemesterRepository->getActiveBySemester($semester);
+    }
+
+    /**
+     * Encontra um professor específico pelo seu ID.
+     *
+     * @param int $id O ID do professor.
+     * @return UserDTO|null
+     */
+    public function findProfessorById(int $id): ?UserDTO
+    {
+        // 3. O serviço simplesmente delega a busca para o repositório correto.
+        return $this->userRepository->findById($id);
     }
 }
