@@ -103,4 +103,40 @@ public function create(array $data): ?UserDTO
 
     return null;
 }
+
+// Dentro da classe PdoUserRepository
+public function findManyByIds(array $ids): array
+{
+    if (empty($ids)) {
+        return [];
+    }
+
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $sql = "SELECT * FROM users WHERE id IN ({$placeholders})";
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($ids);
+
+    $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    $dtos = [];
+    foreach ($results as $userData) {
+        $dtos[] = $this->hydrateUser($userData);
+    }
+    return $dtos;
+}
+
+public function getAllProfessors(): array
+{
+    $sql = "SELECT * FROM users WHERE is_adm = false ORDER BY name ASC";
+    $stmt = $this->pdo->query($sql);
+    
+    $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    $dtos = [];
+    foreach ($results as $userData) {
+        $dtos[] = $this->hydrateUser($userData);
+    }
+    return $dtos;
+}
 }

@@ -65,4 +65,49 @@ class PdoProfessorSemesterRepository implements ProfessorSemesterRepositoryInter
 
         return $stmt->execute($data);
     }
+
+    // Dentro da classe PdoProfessorSemesterRepository
+    public function sync(string $semester, array $data): bool
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            $deleteStmt = $this->pdo->prepare("DELETE FROM professor_semesters WHERE semester = :semester");
+            $deleteStmt->execute([':semester' => $semester]);
+
+            if (!empty($data)) {
+                $sql = "INSERT INTO professor_semesters (user_id, semester, employment_type, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
+                $insertStmt = $this->pdo->prepare($sql);
+
+                foreach ($data as $row) {
+                    $insertStmt->execute([
+                        $row['user_id'],
+                        $semester,
+                        $row['employment_type'],
+                        true,
+                        now()->toDateTimeString(),
+                        now()->toDateTimeString(),
+                    ]);
+                }
+            }
+
+            $this->pdo->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->pdo->rollBack();
+            // Em um projeto real, você logaria o erro $e->getMessage()
+            return false;
+        }
+    }
+
+    public function getActiveProfessorIdsBySemester(string $semester): array
+{
+    $sql = "SELECT user_id FROM professor_semesters WHERE semester = :semester AND is_active = true";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':semester' => $semester]);
+
+    // O PDO::FETCH_COLUMN retorna um array simples apenas com os valores de uma coluna.
+    // Exemplo de retorno: [1, 5, 12]
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
 }

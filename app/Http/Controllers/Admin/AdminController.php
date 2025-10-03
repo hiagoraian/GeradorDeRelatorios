@@ -22,17 +22,21 @@ class AdminController extends Controller
      * Exibe a lista de professores (painel principal).
      */
     public function index(Request $request): View
-    {
-        $availableSemesters = ['2025.2', '2026.1', '2026.2'];
-        $selectedSemester = $request->input('semester', $availableSemesters[0]);
-        $professors = $this->service->getProfessorListBySemester($selectedSemester);
+        {
+            // [MELHORIA] Lendo a lista de semestres do arquivo de configuração
+            $availableSemesters = config('semesters.available');
+            
+            // [MELHORIA] Usando o primeiro semestre da lista como padrão, caso nenhum seja selecionado
+            $selectedSemester = $request->input('semester', $availableSemesters[0]);
 
-        return view('admin.dashboard', [
-            'professors' => $professors,
-            'selectedSemester' => $selectedSemester,
-            'availableSemesters' => $availableSemesters,
-        ]);
-    }
+            $professors = $this->service->getProfessorListBySemester($selectedSemester);
+
+            return view('admin.dashboard', [
+                'professors' => $professors,
+                'selectedSemester' => $selectedSemester,
+                'availableSemesters' => $availableSemesters, // [MELHORIA] Enviando a nova variável para a view
+            ]);
+        }
 
     /**
      * Exibe o formulário para criar um novo professor.
@@ -113,4 +117,42 @@ class AdminController extends Controller
             ->route('admin.professores.show', ['id' => $userId])
             ->with('success', 'Perfil do professor atualizado com sucesso!');
     }
+
+    public function management(Request $request): View
+    {
+        // Lê a lista de semestres do nosso novo arquivo de configuração
+        $availableSemesters = config('semesters.available');
+        
+        // Pega o semestre da URL, ou usa o primeiro da lista como padrão
+        $selectedSemester = $request->input('semester', $availableSemesters[0]);
+
+        // Chama o serviço (a lógica interna do serviço e dos repositórios já fizemos antes)
+        $professors = $this->service->getProfessorManagementList($selectedSemester);
+
+        return view('admin.professores.management', [
+            'professors' => $professors,
+            'selectedSemester' => $selectedSemester,
+            'availableSemesters' => $availableSemesters,
+        ]);
+    }
+
+
+    // Dentro da classe AdminController
+
+public function sync(Request $request): RedirectResponse
+{
+    $data = $request->validate([
+        'semester' => ['required', 'string'],
+        'professor_ids' => ['nullable', 'array'],
+        'professor_ids.*' => ['integer'], // Garante que cada item no array é um inteiro
+    ]);
+
+    $professorIds = $data['professor_ids'] ?? [];
+
+    $this->service->syncProfessorsForSemester($data['semester'], $professorIds);
+
+    return redirect()
+        ->route('admin.management', ['semester' => $data['semester']])
+        ->with('success', 'Professores do semestre atualizados com sucesso!');
+}
 }

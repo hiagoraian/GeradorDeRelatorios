@@ -18,7 +18,7 @@
                     <div class="sidebar-header">Portal NECS</div>
                     <ul class="sidebar-menu">
                         <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li><a href="#">Gestão de Professores</a></li>
+                        <li><a href="{{ route('admin.management') }}">Gestão de Professores</a></li>
                         <li><a href="{{ route('admin.professores.create') }}">Cadastrar Professor</a></li>
                         <li><a href="#">Analise de Dados</a></li>
                         <li>

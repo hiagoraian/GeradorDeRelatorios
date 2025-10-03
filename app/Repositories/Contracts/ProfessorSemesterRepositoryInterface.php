@@ -16,4 +16,8 @@ interface ProfessorSemesterRepositoryInterface
     public function getActiveBySemester(string $semester): array;
 
     public function create(array $data): bool;
+
+    public function sync(string $semester, array $data): bool; 
+
+    public function getActiveProfessorIdsBySemester(string $semester): array;
 }

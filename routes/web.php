@@ -42,7 +42,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/professores/{id}', [AdminController::class, 'update'])->name('professores.update');
 
         Route::post('/professores', [AdminController::class, 'store'])->name('professores.store');
- 
+
+        Route::get('/management', [AdminController::class, 'management'])->name('management');
+        Route::post('/management/sync', [AdminController::class, 'sync'])->name('management.sync');
     });
 
 });

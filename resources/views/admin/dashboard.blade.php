@@ -17,8 +17,12 @@
         <form action="{{ route('admin.dashboard') }}" method="GET">
             <label for="semester">Filtrar por Semestre:</label>
             <select name="semester" id="semester" onchange="this.form.submit()">
-                <option value="2025.2" {{ $selectedSemester == '2025.2' ? 'selected' : '' }}>2025.2</option>
-                <option value="2026.1" {{ $selectedSemester == '2026.1' ? 'selected' : '' }}>2026.1</option>
+                {{-- [MELHORIA] Loop para criar as opções dinamicamente --}}
+                @foreach ($availableSemesters as $semester)
+                    <option value="{{ $semester }}" {{ $selectedSemester == $semester ? 'selected' : '' }}>
+                        {{ $semester }}
+                    </option>
+                @endforeach
             </select>
         </form>
     </div>

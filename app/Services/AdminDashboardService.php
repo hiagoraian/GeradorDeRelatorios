@@ -5,21 +5,22 @@ namespace App\Services;
 use App\DTOs\UserDTO;
 use App\Repositories\Contracts\ProfessorSemesterRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Hash;
 
+/**
+ * Class AdminDashboardService
+ * Encapsula as regras de negócio para as funcionalidades do painel do administrador.
+ */
 class AdminDashboardService
 {
-    /**
-     * O construtor agora injeta AMBOS os repositórios que o serviço precisa.
-     */
     public function __construct(
         protected ProfessorSemesterRepositoryInterface $professorSemesterRepository,
         protected UserRepositoryInterface $userRepository
     ) {}
 
     /**
-     * Busca a lista de professores ativos para um semestre específico.
+     * Busca a lista de professores para a visualização principal do dashboard.
      */
     public function getProfessorListBySemester(string $semester): array
     {
@@ -27,46 +28,77 @@ class AdminDashboardService
     }
 
     /**
-     * Encontra um professor específico pelo seu ID.
-     *
-     * @param int $id O ID do professor.
-     * @return UserDTO|null
+     * Retorna a lista de todos os professores para a página de gerenciamento,
+     * indicando quais estão ativos no semestre selecionado.
      */
-    public function findProfessorById(string $id): ?UserDTO
+    public function getProfessorManagementList(string $semester): array
     {
-        // 3. O serviço simplesmente delega a busca para o repositório correto.
+        $allProfessors = $this->userRepository->getAllProfessors();
+        $activeProfessorIds = $this->professorSemesterRepository->getActiveProfessorIdsBySemester($semester);
+
+        $managementList = [];
+        foreach ($allProfessors as $professor) {
+            $managementList[] = (object) [
+                'id' => $professor->id,
+                'name' => $professor->name,
+                'masp' => $professor->masp,
+                'isActiveInSemester' => in_array($professor->id, $activeProfessorIds)
+            ];
+        }
+        return $managementList;
+    }
+
+    /**
+     * Encontra um professor específico pelo seu ID.
+     */
+    public function findProfessorById(int $id): ?UserDTO
+    {
         return $this->userRepository->findById($id);
     }
 
-    public function updateProfessor(int $id, array $data): bool
+    /**
+     * Cria um novo professor e seu registro de semestre associado.
+     */
+    public function createProfessor(array $data): ?UserDTO
     {
-        // Por enquanto, o serviço apenas repassa a chamada para o repositório.
-        // No futuro, poderíamos adicionar lógicas aqui, como enviar um e-mail de notificação.
-        return $this->userRepository->update($id, $data);
-    }
-     public function createProfessor(array $data): ?UserDTO
-    {
-        // 2. SEPARAMOS os dados: pegamos apenas o que pertence à tabela 'users'
         $userData = Arr::only($data, ['name', 'email', 'masp', 'phone', 'password']);
-        
-        // Criptografa a senha antes de salvar
         $userData['password'] = Hash::make($userData['password']);
-
-        // 3. Criamos o usuário APENAS com os dados dele
         $newUser = $this->userRepository->create($userData);
 
-        // 4. Se o usuário foi criado, usamos o ID dele para criar o registro associado
         if ($newUser) {
             $this->professorSemesterRepository->create([
                 'user_id' => $newUser->id,
-                'semester' => '2025.2', // O semestre padrão para novos cadastros
-                'employment_type' => $data['employment_type'], // Usamos o dado original aqui
+                'semester' => '2025.2',
+                'employment_type' => $data['employment_type'],
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
-
         return $newUser;
+    }
+
+    /**
+     * Atualiza os dados de um professor.
+     */
+    public function updateProfessor(int $id, array $data): bool
+    {
+        return $this->userRepository->update($id, $data);
+    }
+
+    /**
+     * Sincroniza os professores ativos para um determinado semestre.
+     */
+    public function syncProfessorsForSemester(string $semester, array $professorIds): bool
+    {
+        $professors = $this->userRepository->findManyByIds($professorIds);
+        $dataForSync = [];
+        foreach ($professors as $professor) {
+            $dataForSync[] = [
+                'user_id' => $professor->id,
+                'employment_type' => 'Efetivo', // Valor padrão
+            ];
+        }
+        return $this->professorSemesterRepository->sync($semester, $dataForSync);
     }
 }

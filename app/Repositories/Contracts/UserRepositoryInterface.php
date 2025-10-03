@@ -24,4 +24,8 @@ interface UserRepositoryInterface
     public function update(int $id, array $data): bool;
 
     public function create(array $data): ?UserDTO;
+
+    public function findManyByIds(array $ids): array;
+    
+    public function getAllProfessors(): array;
 }
