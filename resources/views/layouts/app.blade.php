@@ -19,7 +19,7 @@
                     <ul class="sidebar-menu">
                         <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                         <li><a href="#">Gestão de Professores</a></li>
-                        <li><a href="#">Cadastrar Professor</a></li>
+                        <li><a href="{{ route('admin.professores.create') }}">Cadastrar Professor</a></li>
                         <li><a href="#">Analise de Dados</a></li>
                         <li>
                             <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sair</a>

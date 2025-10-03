@@ -34,11 +34,15 @@ Route::middleware('auth')->group(function () {
 
     // Grupo de Rotas do Administrador
     Route::middleware('role:1')->prefix('admin')->name('admin.')->group(function () {
-    
+
+        Route::get('/professores/create', [AdminController::class, 'create'])->name('professores.create');
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         Route::get('/professores/{id}', [AdminController::class, 'show'])->name('professores.show');
         Route::get('/professors/{id}/edit', [AdminController::class, 'edit'])->name('professores.edit');
         Route::put('/professores/{id}', [AdminController::class, 'update'])->name('professores.update');
+
+        Route::post('/professores', [AdminController::class, 'store'])->name('professores.store');
+ 
     });
 
 });

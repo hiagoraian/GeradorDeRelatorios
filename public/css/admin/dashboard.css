@@ -159,3 +159,26 @@ tbody tr:hover {
     background-color: #d4edda;
     border-color: #c3e6cb;
 }
+
+/*
+|--------------------------------------------------------------------------
+| Estilos para Formulários dentro do Painel
+|--------------------------------------------------------------------------
+*/
+
+/* Classe genérica para campos de formulário */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box; 
+    transition: border-color 0.2s;
+}
+
+/* Efeito visual quando o campo está selecionado (em foco) */
+.form-control:focus {
+    border-color: #2A1871; 
+    outline: none; 
+}

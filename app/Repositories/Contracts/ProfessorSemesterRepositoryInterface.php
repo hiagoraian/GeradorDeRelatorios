@@ -14,4 +14,6 @@ interface ProfessorSemesterRepositoryInterface
      * @return \App\DTOs\ProfessorSemesterDTO[]
      */
     public function getActiveBySemester(string $semester): array;
+
+    public function create(array $data): bool;
 }

@@ -22,4 +22,6 @@ interface UserRepositoryInterface
     public function findById(int $id): ?UserDTO;
     
     public function update(int $id, array $data): bool;
+
+    public function create(array $data): ?UserDTO;
 }

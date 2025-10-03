@@ -82,4 +82,25 @@ class PdoUserRepository implements UserRepositoryInterface
         
         return $stmt->execute($data);
     }
+
+    // Dentro da classe PdoUserRepository
+public function create(array $data): ?UserDTO
+{
+    $fields = array_keys($data);
+    $fieldString = implode(', ', $fields);
+    $placeholderString = ':' . implode(', :', $fields);
+
+    $sql = "INSERT INTO users ({$fieldString}) VALUES ({$placeholderString})";
+
+    $stmt = $this->pdo->prepare($sql);
+
+    if ($stmt->execute($data)) {
+        // Se a inserção deu certo, pegamos o ID do novo usuário
+        $lastId = $this->pdo->lastInsertId();
+        // e usamos nosso método findById para retornar o DTO completo
+        return $this->findById((int) $lastId);
+    }
+
+    return null;
+}
 }

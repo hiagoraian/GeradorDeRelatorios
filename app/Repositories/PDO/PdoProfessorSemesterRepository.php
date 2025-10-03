@@ -55,4 +55,14 @@ class PdoProfessorSemesterRepository implements ProfessorSemesterRepositoryInter
 
         return $dtos;
     }
+
+    public function create(array $data): bool
+    {
+        $sql = "INSERT INTO professor_semesters (user_id, semester, employment_type, is_active, created_at, updated_at) 
+                VALUES (:user_id, :semester, :employment_type, :is_active, :created_at, :updated_at)";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        return $stmt->execute($data);
+    }
 }
