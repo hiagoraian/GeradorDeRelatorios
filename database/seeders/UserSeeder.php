@@ -10,8 +10,7 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // A responsabilidade de limpar a tabela foi movida para o DatabaseSeeder.
-        // Este seeder agora apenas insere os dados.
+
         DB::table('users')->insert([
             // Usuário Administrador
             [

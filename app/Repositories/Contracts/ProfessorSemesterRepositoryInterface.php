@@ -2,9 +2,6 @@
 
 namespace App\Repositories\Contracts;
 
-/**
- * Interface para o Repositório que lida com os dados de professores por semestre.
- */
 interface ProfessorSemesterRepositoryInterface
 {
     /**
@@ -17,7 +14,7 @@ interface ProfessorSemesterRepositoryInterface
 
     public function create(array $data): bool;
 
-    public function sync(string $semester, array $data): bool; 
+    public function sync(string $semester, array $data): bool;
 
     public function getActiveProfessorIdsBySemester(string $semester): array;
 }

@@ -9,7 +9,7 @@ class UserDTO
         public readonly string $name,
         public readonly string $email,
         public readonly string $masp,
-         public readonly ?string $phone,
+        public readonly ?string $phone,
         public readonly bool $is_adm,
         public readonly string $password,
     ) {}

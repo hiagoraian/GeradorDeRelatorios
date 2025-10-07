@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories\Contracts;
+
 use App\DTOs\UserDTO;
 
 interface UserRepositoryInterface
@@ -20,12 +21,12 @@ interface UserRepositoryInterface
      * @return UserDTO|null
      */
     public function findById(int $id): ?UserDTO;
-    
+
     public function update(int $id, array $data): bool;
 
     public function create(array $data): ?UserDTO;
 
     public function findManyByIds(array $ids): array;
-    
+
     public function getAllProfessors(): array;
 }

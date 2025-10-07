@@ -17,9 +17,9 @@ return new class extends Migration
             $table->foreignId('report_id')->nullable()->constrained('reports')->onDelete('set null');
             $table->string('semester', 10); // Ex: "2025.2" 
             // Usamos string, mas poderia ser um enum('Efetivo', 'Contratado')
-            $table->string('employment_type');            
+            $table->string('employment_type');
             // Flag para o botão "ocultar". True por padrão.
-            $table->boolean('is_active')->default(true); 
+            $table->boolean('is_active')->default(true);
 
             $table->timestamps();
         });

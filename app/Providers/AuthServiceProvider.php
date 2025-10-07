@@ -18,13 +18,8 @@ class AuthServiceProvider extends ServiceProvider
         //
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     */
     public function boot(): void
     {
-        // Este é o código do passo anterior.
-        // Ele registra seu método de login customizado.
         Auth::provider('pdo', function ($app, array $config) {
             return new PdoUserProvider(
                 $app->make(UserRepositoryInterface::class),

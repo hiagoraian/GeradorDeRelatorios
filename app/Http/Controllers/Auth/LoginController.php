@@ -34,7 +34,7 @@ class LoginController extends Controller
             if ($user->is_adm) {
                 return redirect()->intended(route('admin.dashboard'));
             }
-            
+
             return redirect()->intended(route('documents.dashboard'));
         }
 

@@ -34,7 +34,7 @@ class PdoUserProvider implements UserProvider
             $user->getAuthPassword()
         );
     }
-    
+
     protected function getAuthenticatable(UserDTO $userDto): Authenticatable
     {
         $attributes = [
@@ -45,11 +45,17 @@ class PdoUserProvider implements UserProvider
             'is_adm' => $userDto->is_adm,
             'masp' => $userDto->masp,
         ];
-        
+
         return new GenericUser($attributes);
     }
 
-    public function retrieveByCredentials(array $credentials) { return null; }
-    public function retrieveByToken($identifier, $token) { return null; }
+    public function retrieveByCredentials(array $credentials)
+    {
+        return null;
+    }
+    public function retrieveByToken($identifier, $token)
+    {
+        return null;
+    }
     public function updateRememberToken(Authenticatable $user, $token) {}
 }

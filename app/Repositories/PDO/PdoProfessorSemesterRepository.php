@@ -38,9 +38,9 @@ class PdoProfessorSemesterRepository implements ProfessorSemesterRepositoryInter
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':semester' => $semester]);
-        
+
         $results = $stmt->fetchAll(PDO::FETCH_OBJ);
-        
+
         $dtos = [];
         foreach ($results as $row) {
             $dtos[] = new ProfessorSemesterDTO(
@@ -66,7 +66,6 @@ class PdoProfessorSemesterRepository implements ProfessorSemesterRepositoryInter
         return $stmt->execute($data);
     }
 
-    // Dentro da classe PdoProfessorSemesterRepository
     public function sync(string $semester, array $data): bool
     {
         try {
@@ -95,19 +94,16 @@ class PdoProfessorSemesterRepository implements ProfessorSemesterRepositoryInter
             return true;
         } catch (\Exception $e) {
             $this->pdo->rollBack();
-            // Em um projeto real, você logaria o erro $e->getMessage()
             return false;
         }
     }
 
     public function getActiveProfessorIdsBySemester(string $semester): array
-{
-    $sql = "SELECT user_id FROM professor_semesters WHERE semester = :semester AND is_active = true";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([':semester' => $semester]);
+    {
+        $sql = "SELECT user_id FROM professor_semesters WHERE semester = :semester AND is_active = true";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':semester' => $semester]);
 
-    // O PDO::FETCH_COLUMN retorna um array simples apenas com os valores de uma coluna.
-    // Exemplo de retorno: [1, 5, 12]
-    return $stmt->fetchAll(PDO::FETCH_COLUMN);
-}
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
 }

@@ -20,11 +20,11 @@ class PdoUserRepository implements UserRepositoryInterface
     {
         $stmt = $this->pdo->prepare('SELECT * FROM users WHERE email = :email');
         $stmt->execute([':email' => $email]);
-        
+
         $userData = $stmt->fetch();
 
         if ($userData === false) {
-            return null; 
+            return null;
         }
 
         return $this->hydrateUser($userData);
@@ -63,8 +63,6 @@ class PdoUserRepository implements UserRepositoryInterface
         );
     }
 
-    // Dentro da classe PdoUserRepository
-
     public function update(int $id, array $data): bool
     {
 
@@ -77,66 +75,64 @@ class PdoUserRepository implements UserRepositoryInterface
         $data['id'] = $id;
 
         $sql = "UPDATE users SET {$fieldString} WHERE id = :id";
-        
+
         $stmt = $this->pdo->prepare($sql);
-        
+
         return $stmt->execute($data);
     }
 
-    // Dentro da classe PdoUserRepository
-public function create(array $data): ?UserDTO
-{
-    $fields = array_keys($data);
-    $fieldString = implode(', ', $fields);
-    $placeholderString = ':' . implode(', :', $fields);
+    public function create(array $data): ?UserDTO
+    {
+        $fields = array_keys($data);
+        $fieldString = implode(', ', $fields);
+        $placeholderString = ':' . implode(', :', $fields);
 
-    $sql = "INSERT INTO users ({$fieldString}) VALUES ({$placeholderString})";
+        $sql = "INSERT INTO users ({$fieldString}) VALUES ({$placeholderString})";
 
-    $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
 
-    if ($stmt->execute($data)) {
-        // Se a inserção deu certo, pegamos o ID do novo usuário
-        $lastId = $this->pdo->lastInsertId();
-        // e usamos nosso método findById para retornar o DTO completo
-        return $this->findById((int) $lastId);
+        if ($stmt->execute($data)) {
+
+            $lastId = $this->pdo->lastInsertId();
+
+            return $this->findById((int) $lastId);
+        }
+
+        return null;
     }
 
-    return null;
-}
+    public function findManyByIds(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
 
-// Dentro da classe PdoUserRepository
-public function findManyByIds(array $ids): array
-{
-    if (empty($ids)) {
-        return [];
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $sql = "SELECT * FROM users WHERE id IN ({$placeholders})";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($ids);
+
+        $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        $dtos = [];
+        foreach ($results as $userData) {
+            $dtos[] = $this->hydrateUser($userData);
+        }
+        return $dtos;
     }
 
-    $placeholders = implode(',', array_fill(0, count($ids), '?'));
-    $sql = "SELECT * FROM users WHERE id IN ({$placeholders})";
+    public function getAllProfessors(): array
+    {
+        $sql = "SELECT * FROM users WHERE is_adm = false ORDER BY name ASC";
+        $stmt = $this->pdo->query($sql);
 
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($ids);
+        $results = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    $results = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-    $dtos = [];
-    foreach ($results as $userData) {
-        $dtos[] = $this->hydrateUser($userData);
+        $dtos = [];
+        foreach ($results as $userData) {
+            $dtos[] = $this->hydrateUser($userData);
+        }
+        return $dtos;
     }
-    return $dtos;
-}
-
-public function getAllProfessors(): array
-{
-    $sql = "SELECT * FROM users WHERE is_adm = false ORDER BY name ASC";
-    $stmt = $this->pdo->query($sql);
-    
-    $results = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-    $dtos = [];
-    foreach ($results as $userData) {
-        $dtos[] = $this->hydrateUser($userData);
-    }
-    return $dtos;
-}
 }

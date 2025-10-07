@@ -14,7 +14,7 @@ class Connection
     {
         if (self::$instance === null) {
             $config = config('database.connections.mysql');
-            
+
             $dsn = sprintf(
                 'mysql:host=%s;dbname=%s;port=%s;charset=%s',
                 $config['host'],
